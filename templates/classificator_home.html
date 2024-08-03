@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Nerve Classificator</title>
+    <style>
+    .circle {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 30px;
+        height: 30px;
+        background-color: #FD024F;
+        color: #ffffff;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+    }
+    .button-container {
+        position: absolute;
+        top: 40%;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        margin: 0px 0;
+    }
+
+    .responsive-button {
+        flex: 1 1 auto;
+        max-width: 600px;
+        transition: all 150ms;
+        position: relative;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 40px;
+        color: #fff;
+        padding-bottom: 25px;
+        padding-top: 25px;
+        background-color: #155581;
+        border:none;
+        margin: 0 2%;
+    }
+    .responsive-button:hover {
+        background-color: #1a7cb7;
+    }
+    .top_button-container {
+        margin-top: 5%;
+        display: flex;
+        justify-content: center;
+        align-items: center;/* Optional: Set to the height you want */
+    }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <img src="{{ url_for('static', filename='klinikum_logo.png') }}" alt="Klinikum Logo" class="logo left-logo">
+        <h1 class="headline">            
+            <span class="header-text">Nerve Classificator</span>
+        </h1>
+        <img src="{{ url_for('static', filename='THA_logo.jpg') }}" alt="HSA Logo" class="logo right-logo">
+    </header>
+    <main>
+        <div class="top_button-container">
+            <button class="responsive-button" onclick="window.location.href='/ai_classification'">Nerve detector</button>
+        </div>
+        <div class="button-container">
+            <button class="responsive-button" onclick="window.location.href='/add_labels'">Add labels
+                <span class="circle">1</span>
+            </button>
+            <button class="responsive-button" onclick="window.location.href='/BboxClassification'">Add bounding boxes
+                <span class="circle">1</span>
+            </button>
+        </div>
+    </main>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $.get('/get_numbers', function(data) {
+                $('.responsive-button:nth-child(1) .circle').text(data.labelNumber);
+                $('.responsive-button:nth-child(2) .circle').text(data.boundingBoxNumber);
+            });
+        });
+    </script>
+    </script>
+</body>
+</html>

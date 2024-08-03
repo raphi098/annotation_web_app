@@ -1,0 +1,214 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: white;
+}
+header{
+    height: 10vh;
+    border-bottom: 1px solid #eee;
+    background-color: white;
+    text-align: center;
+    color: #155581;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo {
+height: 90%;
+width: 10%; /* Set the width */
+object-fit: contain; /* Add this line */
+}
+.left-logo {
+    margin-left: 10px;
+    height: 100%;
+}
+.right-logo {
+    margin-right: 10px;
+}
+.button-section{
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.frame-input-wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    font-size: 20px;
+}
+.file-upload{
+    width: 400px;
+    transition: all 150ms;
+    position: relative;
+    margin: auto;
+    height: 25px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 20px;
+    color: #fff;
+    padding-bottom: 25px;
+    padding-top: 25px;
+    background-color: #155581;
+    text-align: center;
+    vertical-align: middle;
+}
+.file-upload:hover {
+    background-color: #1a7cb7;
+}
+h1{
+    margin: 0;
+    font-size: 70px;
+}
+#upload-message {
+    text-align: center;
+    width: 100%;
+    margin: auto;
+    margin-top: 5px;
+}
+#uploaded-video {
+    display: none;
+    margin: auto;
+    border: 2px solid #000;
+    width: 20vw;
+    height: 20vh;
+    margin-top: 10px;
+}
+.error-message {
+    color: red;
+}
+.success-message {
+    color: green;
+}
+#predict-button {
+    transition: all 150ms;
+    position: relative;
+    margin: auto;
+    margin-top: 10px;
+    border-radius: 20px;
+    border-color:none;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 20px;
+    color: #fff;
+    padding-bottom: 25px;
+    padding-top: 25px;
+    background-color: #155581;
+    text-align: center;
+    vertical-align: middle;
+    border:none;
+    margin-bottom: 10px;
+    width: 400px;
+
+}
+#predict-button:hover {
+    background-color: #1a7cb7;
+}
+#image-grid {
+display: flex;
+flex-wrap: wrap;
+justify-content: space-between;
+margin-left: 10%;
+margin-right: 10%;
+ }
+#image-grid img {
+width: 40%;
+margin: 10px 0;  /* 10px margin top and bottom */
+}
+.save-button {
+    transition: all 150ms;
+    position: relative;
+    margin: auto;
+    margin-top: 10px;
+    border-radius: 10px;
+    border-color:none;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 20px;
+    color: #fff;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    background-color: #155581;
+    text-align: center;
+    vertical-align: middle;
+    border:none;
+    margin-bottom: 10px;
+}
+.save-button:hover {
+    background-color: #1a7cb7;
+}
+.loader-wrapper {
+    width: 100%;
+    height:100%;
+    position:absolute;
+    top: 0;
+    left: 0;
+    background-color:#242f3f;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.loader {
+display: inline-block;
+width: 30px;
+height: 30px;
+position: relative;
+border: 4px solid #Fff;
+animation: loader 2s infinite ease;
+}
+
+.loader-inner {
+vertical-align: top;
+display: inline-block;
+width: 100%;
+background-color: #fff;
+animation: loader-inner 2s infinite ease-in;
+}
+
+@keyframes loader {
+0% {
+    transform: rotate(0deg);
+}
+
+25% {
+    transform: rotate(180deg);
+}
+
+50% {
+    transform: rotate(180deg);
+}
+
+75% {
+    transform: rotate(360deg);
+}
+
+100% {
+    transform: rotate(360deg);
+}
+}
+
+@keyframes loader-inner {
+0% {
+    height: 0%;
+}
+
+25% {
+    height: 0%;
+}
+
+50% {
+    height: 100%;
+}
+
+75% {
+    height: 100%;
+}
+
+100% {
+    height: 0%;
+}
+}

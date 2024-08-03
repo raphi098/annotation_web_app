@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        
+        .krank-box {
+            margin-left: 5px;
+        }
+        body {
+            background-color: ivory;
+        }
+        .content {
+            display: flex;
+            justify-content: center;
+            align-items: center; /* Change this back to center */
+            align-content: flex-start; /* Add this */
+            height: calc(100vh - 60px); /* Adjust this value as needed */
+            flex-direction: column;
+        }
+        canvas {
+            border: 1px solid #155581;
+        }
+        .save-button {
+            margin-top: 20px; /* Add this */
+            transition: all 150ms;
+            border-radius: 20px;
+            border-color:none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 20px;
+            color: #fff;
+            padding-bottom: 25px;
+            padding-top: 25px;
+            background-color: #155581;
+            border:none;
+            width: 400px;
+        }
+        .save-button:hover {
+            background-color: #1a7cb7;
+        }
+        #canvasWrapper{
+            position:relative;
+        }
+        .checkbox-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <img src="{{ url_for('static', filename='klinikum_logo.png') }}" alt="Klinikum Logo" class="logo left-logo">
+        <h1 class="headline">            
+            <span class="header-text">Expand nerve knowledge</span>
+        </h1>
+        <img src="{{ url_for('static', filename='THA_logo.jpg') }}" alt="HSA Logo" class="logo right-logo">
+    </header>
+    <main>
+
+        <div class="content">
+            <div class="checkbox-container" style="display: flex; justify-content: space-between;">
+                <label><input class="krank-box" type="checkbox" name="krank"> Krank</label>
+                <label><input type="radio" name="group1" value="medoa"> Medoa</label>
+                <label><input type="radio" name="group1" value="medua"> Medua</label>
+                <label><input type="radio" name="group1" value="ulnoa"> Ulnoa</label>
+                <label><input type="radio" name="group1" value="ulnua"> Ulnua</label>
+            </div>
+            <canvas id="canvas1" width="500" height="500"></canvas>
+            <script>
+                var canvas = document.getElementById('canvas1');
+                var ctx = canvas.getContext('2d');
+                var img = new Image();
+                img.src = "{{ url_for('BboxClassification.serve_image2', filename=images[0]) }}";
+                img.onload = function() {
+                    var maxWidth = 640;
+                    var maxHeight = 480;
+                    var width = img.naturalWidth;
+                    var height = img.naturalHeight;
+
+                    // Check if the image size is greater than the max dimensions
+                    if (width > maxWidth || height > maxHeight) {
+                        // Calculate the scale
+                        var scale = Math.min(maxWidth / width, maxHeight / height);
+
+                        // Update the width and height
+                        width *= scale;
+                        height *= scale;
+                    }
+
+                    // Set the canvas width and height
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    // Get the context again and set the strokeStyle
+                    ctx = canvas.getContext('2d');
+                    ctx.strokeStyle = "#F4074D";
+                    // Draw the image on the canvas
+                    ctx.drawImage(img, 0, 0, width, height);
+                }
+                var isDown = false;
+                var startX;
+                var startY;
+        
+                function getOffset(el) {
+                    var rect = el.getBoundingClientRect();
+                    return {
+                        left: rect.left + window.scrollX,
+                        top: rect.top + window.scrollY
+                    };
+                }
+        
+                function handleMouseDown(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+        
+                    var offset = getOffset(canvas);
+                    startX = parseInt(e.clientX - offset.left);
+                    startY = parseInt(e.clientY - offset.top);
+        
+                    isDown = true;
+                }
+        
+                function handleMouseUp(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+        
+                    isDown = false;
+                }
+        
+                function handleMouseMove(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+        
+                    if (!isDown) {
+                        return;
+                    }
+        
+                    var offset = getOffset(canvas);
+                    var mouseX = parseInt(e.clientX - offset.left);
+                    var mouseY = parseInt(e.clientY - offset.top);
+        
+                    var width = mouseX - startX;
+                    var height = mouseY - startY;
+        
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    ctx.strokeRect(startX, startY, width, height);
+                }
+        
+                canvas.addEventListener('mousedown', handleMouseDown, false);
+                canvas.addEventListener('mouseup', handleMouseUp, false);
+                canvas.addEventListener('mousemove', handleMouseMove, false);
+            </script>
+            <button id="save-button" class="save-button">Daten speichern</button>
+        </div>
+
+    </main>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</body>
+</html>

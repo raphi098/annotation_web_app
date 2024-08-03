@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        
+        .krank-box {
+            margin-left: 5px;
+        }
+        body {
+            background-color: rgb(255, 255, 255);
+        }
+        .content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            align-content: flex-start; /* Add this */
+            height: calc(100vh - 60px); /* Adjust this value as needed */
+            flex-direction: column;
+        }
+        canvas {
+            border: 1px solid #155581;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            margin-top: 10px;
+            
+        }
+        #save-button, #back-button, #next-button {
+            transition: all 150ms;
+            border-radius: 20px;
+            border-color:none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 20px;
+            color: #fff;
+            padding-bottom: 15px;
+            padding-top: 15px;
+            background-color: #155581;
+            border:none;
+            width: 100px;
+            margin-right: 80px; 
+        }
+        #next-button {
+            margin-right: 0;
+        }
+        #back-button:hover, #next-button:hover, #save-button:hover {
+            background-color: #1a7cb7;
+        }
+        #save-button {
+            width: 200px;
+        }
+
+        #canvasWrapper{
+            position:relative;
+        }
+        .checkbox-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <img src="{{ url_for('static', filename='klinikum_logo.png') }}" alt="Klinikum Logo" class="logo left-logo">
+        <h1 class="headline">            
+            <span class="header-text">Add bounding boxes</span>
+        </h1>
+        <img src="{{ url_for('static', filename='THA_logo.jpg') }}" alt="HSA Logo" class="logo right-logo">
+    </header>
+    <main>
+
+        <div class="content">
+            <div class="checkbox-container" style="display: flex; justify-content: space-between;">
+                <label class="krank-box-label"><input class="krank-box" type="checkbox" name="krank">krank</label>
+                <label class="medoa-radio-label"><input type="radio" name="group1" value="medoa">medoa</label>
+                <label class="medua-radio-label"><input type="radio" name="group1" value="medua">medua</label>
+                <label class="ulnoa-radio-label"><input type="radio" name="group1" value="ulnoa">ulnoa</label>
+                <label class="ulnua-radio-label"><input type="radio" name="group1" value="ulnua">ulnua</label>
+            </div>
+            <canvas id="canvas1" width="500" height="500"></canvas>
+            <div class="button-container">
+                <button id="back-button">Zurück</button>
+                <button id="save-button" class="save-button">Daten speichern</button>
+                <button id="next-button">Nächstes</button>
+            </div>
+        </div>
+        <script>
+            var currentImageIndex = 0;
+            var saveButton = document.getElementById('save-button');
+            var nextButton = document.getElementById('next-button');
+            var backButton = document.getElementById('back-button');
+            var canvas = document.getElementById('canvas1');
+            var ctx = canvas.getContext('2d');
+            var img = new Image();
+            checkpoint_dict_list = [];
+            var rect = null;  // Variable to store the rectangle data
+            function set_Boxes_Rect() {
+                // Set the checkbox and radio buttons based on the values in checkpoint_dict_list[currentImageIndex]
+                if (checkpoint_dict_list[currentImageIndex].krank === 'krank') {
+                    document.querySelector('input[name="krank"]').checked = true;
+                } else {
+                    document.querySelector('input[name="krank"]').checked = false;
+                }
+                if (checkpoint_dict_list[currentImageIndex].group === 'medoa') {
+                    document.querySelector('input[value="medoa"]').checked = true;
+                } else if (checkpoint_dict_list[currentImageIndex].group === 'medua') {
+                    document.querySelector('input[value="medua"]').checked = true;
+                } else if (checkpoint_dict_list[currentImageIndex].group === 'ulnoa') {
+                    document.querySelector('input[value="ulnoa"]').checked = true;
+                } else if (checkpoint_dict_list[currentImageIndex].group === 'ulnua') {
+                    document.querySelector('input[value="ulnua"]').checked = true;
+                } else {
+                    console.log('No radio button selected');
+                    if (currentImageIndex === 0 && checkpoint_dict_list[checkpoint_dict_list.length - 1].group !== null){
+                        document.querySelector(`input[value="${checkpoint_dict_list[checkpoint_dict_list.length - 1].group}"]`).checked = false;
+    
+                    }
+                    else if (currentImageIndex !== 0 && checkpoint_dict_list[currentImageIndex - 1].group !== null) {
+                        document.querySelector(`input[value="${checkpoint_dict_list[currentImageIndex - 1].group}"]`).checked = false;
+                    }
+                }
+                // Set the rectangle
+                rect = checkpoint_dict_list[currentImageIndex].rect;
+                console.log(rect, "rect");
+                if (rect !== null) {
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    ctx.strokeRect(rect.startX, rect.startY, rect.width, rect.height);
+                }
+            }
+        // Fetch the image list from the server
+            fetch('/image_list')
+                .then(response => response.json())
+                .then(imageFiles => {
+                // Get the error bbox list from the server
+                fetch('/get_error_bbox_json')
+                    .then(response => response.json())
+                    .then(error_bbox_list => {
+                        label_list = error_bbox_list;
+                    // imageFiles is an array of filenames
+                    imageFiles.forEach(function(item) {
+                        var krank = null;
+                        var group = null;
+                        label_list.forEach(function(label) {
+                            if (item === label['picture']) {
+                                if (label['name'] != "not labeled")
+                                    if(label['name'].includes('_')){
+                                        krank = 'krank';
+                                        group = label['name'].split('_')[0];
+                                    }
+                                    else{
+                                        group = label['name'];
+                                    }
+                                
+                                return true;
+                            }
+                        });
+                        
+                        muster_dict = {
+                        img_name: item,
+                        krank: krank,
+                        group: group,
+                        rect: null,
+                        width: null,
+                        height: null
+                        };
+                        checkpoint_dict_list.push(muster_dict);
+                    });
+
+                });
+            imageUrls = imageFiles.map(filename => '/serve_image2/' + filename);
+            img.src = imageUrls[currentImageIndex];
+            console.log("SRC",imageUrls[currentImageIndex]);
+            img.onload = function() {
+                var maxWidth = 640;
+                var maxHeight = 480;
+                var width = img.naturalWidth;
+                var height = img.naturalHeight;
+
+                // Check if the image size is greater than the max dimensions
+                if (width > maxWidth || height > maxHeight) {
+                    // Calculate the scale
+                    var scale = Math.min(maxWidth / width, maxHeight / height);
+
+                    // Update the width and height
+                    width *= scale;
+                    height *= scale;
+                }
+
+                // Set the canvas width and height
+                canvas.width = width;
+                canvas.height = height;
+
+                // Save the image dimensions
+                checkpoint_dict_list[currentImageIndex].width = width;
+                checkpoint_dict_list[currentImageIndex].height = height;
+
+                // Get the context again and set the strokeStyle
+                ctx = canvas.getContext('2d');
+                ctx.strokeStyle = "#F4074D";
+                // Draw the image on the canvas
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Set the checkbox and radio buttons based on the values in checkpoint_dict_list[currentImageIndex]
+                set_Boxes_Rect();
+            }
+           
+            var isDown = false;
+            var startX;
+            var startY;
+    
+            function getOffset(el) {
+                var rect = el.getBoundingClientRect();
+                return {
+                    left: rect.left + window.scrollX,
+                    top: rect.top + window.scrollY
+                };
+            }
+    
+            function handleMouseDown(e) {
+                e.preventDefault();
+                e.stopPropagation();
+    
+                var offset = getOffset(canvas);
+                startX = parseInt(e.clientX - offset.left);
+                startY = parseInt(e.clientY - offset.top);
+    
+                isDown = true;
+            }
+    
+            function handleMouseUp(e) {
+                e.preventDefault();
+                e.stopPropagation();
+    
+                isDown = false;
+            }
+    
+            function handleMouseMove(e) {
+                e.preventDefault();
+                e.stopPropagation();
+    
+                if (!isDown) {
+                    return;
+                }
+    
+                var offset = getOffset(canvas);
+                var mouseX = parseInt(e.clientX - offset.left);
+                var mouseY = parseInt(e.clientY - offset.top);
+    
+                var width = mouseX - startX;
+                var height = mouseY - startY;
+                // Store the rectangle data
+                // Make sure that starting point of rectangle is top-left
+                if (height < 0) {
+                    height = -height;
+                    startY = mouseY;
+                }
+                if (width < 0) {
+                    width = -width;
+                    startX = mouseX;
+                }
+                rect = { startX: startX, startY: startY, width: width, height: height };
+                // Draw the rectangle
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                ctx.strokeRect(startX, startY, width, height);
+                console.log(rect);
+            }
+            canvas.addEventListener('mousedown', handleMouseDown, false);
+            canvas.addEventListener('mouseup', handleMouseUp, false);
+            canvas.addEventListener('mousemove', handleMouseMove, false);
+                
+            });
+
+            
+            nextButton.addEventListener('click', function() {
+            // Save the current state for the active image
+            //Get the radio button value
+            var group1Radio = document.querySelector('input[name="group1"]:checked');
+            var group1RadioText = group1Radio ? group1Radio.parentElement.textContent : null;
+
+            // Get the checkbox value = krank oder null
+            var checkbox_krank = document.querySelector('input[name="krank"]:checked');
+            checkbox_krank  = checkbox_krank ? checkbox_krank.parentElement.textContent : null;
+
+            checkpoint_dict_list[currentImageIndex].krank = checkbox_krank; 
+            checkpoint_dict_list[currentImageIndex].group = group1RadioText;
+            if (rect !== null){
+                checkpoint_dict_list[currentImageIndex].rect = rect;
+            }
+            
+            // Update the index and load the next image
+            currentImageIndex++;
+            if (currentImageIndex >= checkpoint_dict_list.length) {
+                currentImageIndex = 0; // Loop back to the first image
+                console.log("great reset");
+            }
+            img.src = imageUrls[currentImageIndex];
+
+            // Save the image dimensions
+            checkpoint_dict_list[currentImageIndex].width = img.naturalWidth;
+            checkpoint_dict_list[currentImageIndex].height = img.naturalHeight;
+            // Set the checkbox and radio buttons based on the values in checkpoint_dict_list[currentImageIndex]
+            set_Boxes_Rect();
+                
+        });
+
+        backButton.addEventListener('click', function() {
+            // Save the current state for the active image
+            var group1Radio = document.querySelector('input[name="group1"]:checked');
+            var group1RadioText = group1Radio ? group1Radio.parentElement.textContent : null;
+
+            // Get the checkbox value = krank oder null
+            var checkbox_krank = document.querySelector('input[name="krank"]:checked');
+            checkbox_krank  = checkbox_krank ? checkbox_krank.parentElement.textContent : null;
+
+            // Save the current state for the active image
+            checkpoint_dict_list[currentImageIndex].krank = checkbox_krank; 
+            checkpoint_dict_list[currentImageIndex].group = group1RadioText;
+            if (rect !== null){
+                checkpoint_dict_list[currentImageIndex].rect = rect;
+            }
+
+            // Update the index and load the next image
+            currentImageIndex--;
+            if (currentImageIndex < 0) {
+                currentImageIndex = checkpoint_dict_list.length - 1; // Loop back to the last image
+                
+            }
+            var list_length = checkpoint_dict_list.length - 1
+                // Load the next image
+                img.src = imageUrls[currentImageIndex];
+                checkpoint_dict_list[currentImageIndex].width = img.naturalWidth;
+                checkpoint_dict_list[currentImageIndex].height = img.naturalHeight;
+                // Set the checkbox and radio buttons based on the values in checkpoint_dict_list[currentImageIndex]
+                if (checkpoint_dict_list[currentImageIndex].krank === 'krank') {
+                    document.querySelector('input[name="krank"]').checked = true;
+                } else {
+                    document.querySelector('input[name="krank"]').checked = false;
+                }
+                if (checkpoint_dict_list[currentImageIndex].group === 'medoa') {
+                    document.querySelector('input[value="medoa"]').checked = true;
+                } else if (checkpoint_dict_list[currentImageIndex].group === 'medua') {
+                    document.querySelector('input[value="medua"]').checked = true;
+                } else if (checkpoint_dict_list[currentImageIndex].group === 'ulnoa') {
+                    document.querySelector('input[value="ulnoa"]').checked = true;
+                } else if (checkpoint_dict_list[currentImageIndex].group === 'ulnua') {
+                    document.querySelector('input[value="ulnua"]').checked = true;
+                } else {
+                    console.log('No radio button selected');
+                    if (currentImageIndex === list_length && checkpoint_dict_list[0].group !== null){
+                        document.querySelector(`input[value="${checkpoint_dict_list[0].group}"]`).checked = false;
+    
+                    }
+                    else if (currentImageIndex !== list_length && checkpoint_dict_list[currentImageIndex + 1].group !== null) {
+                        document.querySelector(`input[value="${checkpoint_dict_list[currentImageIndex + 1].group}"]`).checked = false;
+                    }
+                }
+                // Set the rectangle
+                rect = checkpoint_dict_list[currentImageIndex].rect;
+                if (rect !== null) {
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    ctx.strokeRect(rect.startX, rect.startY, rect.width, rect.height);
+                }
+            });
+
+            saveButton.addEventListener('click', function() {
+                // Save the current state for the active image
+                var group1Radio = document.querySelector('input[name="group1"]:checked');
+                var group1RadioText = group1Radio ? group1Radio.parentElement.textContent : null;
+
+                // Get the checkbox value = krank oder null
+                var checkbox_krank = document.querySelector('input[name="krank"]:checked');
+                checkbox_krank  = checkbox_krank ? checkbox_krank.parentElement.textContent : null;
+
+                checkpoint_dict_list[currentImageIndex].krank = checkbox_krank; 
+                checkpoint_dict_list[currentImageIndex].group = group1RadioText;
+                if (rect !== null){
+                    checkpoint_dict_list[currentImageIndex].rect = rect;
+                }
+                // Send the data to the server
+                fetch('/save_bbox', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(checkpoint_dict_list)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    window.location.href = '/classification_home';
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            });
+            </script>
+
+    </main>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</body>
+</html>

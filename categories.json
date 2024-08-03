@@ -1,0 +1,10 @@
+[
+    {"name":"ulnua_krank", "id": 7},
+    {"name":"ulnoa_krank", "id": 6},
+    {"name":"medua_krank", "id": 5},
+    {"name":"medoa_krank", "id": 4},
+    {"name":"ulnua", "id": 3},
+    {"name":"ulnoa", "id": 2},
+    {"name":"medua", "id": 1},
+    {"name":"medoa", "id": 0}
+]

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .checkbox-container-display{
+            display: flex;
+            flex-direction: row; /* Setzen Sie flex-direction auf column */
+            margin-top: 10px;
+            justify-content: center; /* Zentriert die Elemente horizontal */
+            align-items: center; /* Zentriert die Elemente vertikal */
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <img src="{{ url_for('static', filename='klinikum_logo.png') }}" alt="Klinikum Logo" class="logo left-logo">
+        <h1 class="headline">            
+            <span class="header-text">Nerve detector</span>
+        </h1>
+        <img src="{{ url_for('static', filename='THA_logo.jpg') }}" alt="HSA Logo" class="logo right-logo">
+    </header>
+    <main>
+    <div class="frame-input-wrapper">
+        <label class="frame-input" for="frame-input">Frames per Second:</label>
+        <input type="number" id="frame-input" name="frame-input" min="1" value="1">
+    </div>
+
+        <div class="button-section">
+            <label for="file-upload" class="file-upload">Datei auswählen</label>
+            <input id="file-upload" type="file" accept="video/*" style="display: none;" onchange="handleFileUpload(event)" />
+        </div>
+        <p id="upload-message" style="display: none;"></p>
+        <button id="predict-button" onclick="predict()" style="display: none;">Start the prediction</button>
+        <div class="checkbox-container" style="display: none;">
+            <label><input class="krank-box" type="checkbox" name="krank">krank</label>
+            <label><input type="radio" name="group" value="medoa">medoa</label>
+            <label><input type="radio" name="group" value="medua">medua</label>
+            <label><input type="radio" name="group" value="ulnoa">ulnoa</label>
+            <label><input type="radio" name="group" value="ulnua">ulnua</label>
+        </div>
+        <div id="image-grid" style="display: flex; flex-wrap: wrap;"></div>
+        <button id="save-button" class="save-button" style="display: none;">Daten speichern</button>
+    </main>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    </script>
+</body>
+</html>

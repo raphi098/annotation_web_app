@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1040px;
+            margin: 0 auto;
+        }
+    
+        .grid-item {
+            border: 1px solid #155581;
+            padding: 10px;
+        }
+    
+        .grid-item img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+    
+        .checkbox-container {
+            display: flex;
+            flex-direction: column; /* Setzen Sie flex-direction auf column */
+            margin-top: 10px;
+        }
+
+        .save-button {
+            transition: all 150ms;
+            position: relative;
+            border-radius: 20px;
+            border-color:none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 20px;
+            color: #fff;
+            padding-bottom: 25px;
+            padding-top: 25px;
+            background-color: #155581;
+            text-align: center;
+            vertical-align: middle;
+            border:none;
+            margin-bottom: 10px;
+            width: 400px;
+        }
+        .save-button:hover {
+            background-color: #1a7cb7;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .krank-box {
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <img src="{{ url_for('static', filename='klinikum_logo.png') }}" alt="Klinikum Logo" class="logo left-logo">
+        <h1 class="headline">            
+            <span class="header-text">Nerve labeling</span>
+        </h1>
+        <img src="{{ url_for('static', filename='THA_logo.jpg') }}" alt="HSA Logo" class="logo right-logo">
+    </header>
+
+    <main>
+        <div class="grid-container">
+            {% for image in images %}
+            <div class="grid-item">
+                <img src="{{ url_for('add_label.serve_image', filename=image) }}" alt="Image">
+                <div class="checkbox-container">
+                    <label><input class="krank-box" type="checkbox" name="krank"> Krank</label>
+                    <label><input type="radio" name="group{{ loop.index }}" value="medoa"> Medoa</label>
+                    <label><input type="radio" name="group{{ loop.index }}" value="medua"> Medua</label>
+                    <label><input type="radio" name="group{{ loop.index }}" value="ulnoa"> Ulnoa</label>
+                    <label><input type="radio" name="group{{ loop.index }}" value="ulnua"> Ulnua</label>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="button-container">
+            <button id="save-button" class="save-button">Daten speichern</button>
+        </div>
+    </main>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        $('#save-button').click(function() {
+            var data = [];
+            $('.grid-item').each(function() {
+                var image = $(this).find('img').attr('src');
+                var krank = $(this).find('.krank-box').is(':checked');
+                var group = $(this).find('input[type=radio]:checked').val();
+                data.push({image: image, krank: krank, group: group});
+            });
+
+            $.ajax({
+                url: '/save_labels',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    window.location.href = '/classification_home';
+                },
+                error: function(error) {
+                    console.log(error);
+                    
+                }
+            });
+        });
+    });
+    </script>
+    </script>
+</body>
+</html>
