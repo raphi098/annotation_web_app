@@ -1,0 +1,14 @@
+# Python cache
+__pycache__
+
+# Extracted frames
+extracted_frames
+
+# Detected objects
+detected_nerves
+
+# Correctly labeled and annotated trainig data
+Trainingsdaten
+
+# Hand calssified objects
+HandClassification
