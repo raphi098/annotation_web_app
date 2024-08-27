@@ -10,8 +10,6 @@ add_label_blueprint = Blueprint('add_label', __name__)
 @add_label_blueprint.route('/add_labels')
 def add_labels():
     display_image_folder = os.path.join(os.getcwd(),'HandClassification', 'change_label', "display")
-
-    #Move the images that have no detection to the error_label folder
     raw_image_folder = os.path.join(os.getcwd(), 'HandClassification', 'change_label', 'raw')
     error_bbox_folder = os.path.join(os.getcwd(), 'HandClassification', 'Adapt_bbox')
     path_to_error_label_file = os.path.join(os.getcwd(),'HandClassification', 'change_label', 'error_label.json')
