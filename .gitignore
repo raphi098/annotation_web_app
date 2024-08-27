@@ -2,13 +2,15 @@
 __pycache__
 
 # Extracted frames
-extracted_frames
+extracted_frames/*
+!extracted_frames/.gitkeep
 
 # Detected objects
-detected_nerves
+static/detected_nerves/*
+!static/detected_nerves/.gitkeep
 
 # Correctly labeled and annotated trainig data
-Trainingsdaten
+Trainingsdaten/*
 
 # Hand calssified objects
-HandClassification
+HandClassification/*
