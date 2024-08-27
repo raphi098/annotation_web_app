@@ -23,4 +23,4 @@ def home():
     return render_template('classificator_home.html')
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5555)
+    app.run(debug=True, port=5001)

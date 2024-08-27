@@ -20,7 +20,7 @@ function handleFileUpload(event) {
             var formData = new FormData();
             formData.append('file', file);
             formData.append('frames', framesElement.value);  // Append the number of frames to the form data
-            fetch('http://localhost:5555/upload', {
+            fetch('http://localhost:5001/upload', {
                 method: 'POST',
                 body: formData
             })
@@ -72,7 +72,7 @@ function handleFileUpload(event) {
         $('#upload-message').hide();
         // Create the loader
         var loader = createLoader();
-        fetch('http://localhost:5555/predict')
+        fetch('http://localhost:5001/predict')
             .then(response => response.json())
             .then(data => {
                 // Handle the response data here
@@ -136,7 +136,7 @@ document.getElementById('save-button').addEventListener('click', function() {
 
     const json = JSON.stringify(data);
 
-    fetch('http://localhost:5555/save_data', {
+    fetch('http://localhost:5001/save_data', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
