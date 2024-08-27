@@ -3,6 +3,3 @@ __pycache__
 
 # Correctly labeled and annotated trainig data
 Trainingsdaten/*
-
-# Hand calssified objects
-HandClassification/*
