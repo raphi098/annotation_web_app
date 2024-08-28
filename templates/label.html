@@ -76,17 +76,17 @@
             <div class="grid-item">
                 <img src="{{ url_for('add_label.serve_image', filename=image) }}" alt="Image">
                 <div class="checkbox-container">
-                    <label><input class="krank-box" type="checkbox" name="krank"> Krank</label>
-                    <label><input type="radio" name="group{{ loop.index }}" value="medoa"> Medoa</label>
-                    <label><input type="radio" name="group{{ loop.index }}" value="medua"> Medua</label>
-                    <label><input type="radio" name="group{{ loop.index }}" value="ulnoa"> Ulnoa</label>
-                    <label><input type="radio" name="group{{ loop.index }}" value="ulnua"> Ulnua</label>
+                    <label><input class="krank-box" type="checkbox" name="krank"> ill</label>
+                    <label><input type="radio" name="group{{ loop.index }}" value="medoa"> medoa</label>
+                    <label><input type="radio" name="group{{ loop.index }}" value="medua"> medua</label>
+                    <label><input type="radio" name="group{{ loop.index }}" value="ulnoa"> ulnoa</label>
+                    <label><input type="radio" name="group{{ loop.index }}" value="ulnua"> ulnua</label>
                 </div>
             </div>
             {% endfor %}
         </div>
         <div class="button-container">
-            <button id="save-button" class="save-button">Daten speichern</button>
+            <button id="save-button" class="save-button">Save</button>
         </div>
     </main>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
