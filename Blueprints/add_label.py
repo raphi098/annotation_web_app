@@ -1,9 +1,8 @@
-from flask import Flask, request, jsonify, render_template, Blueprint, send_from_directory, redirect, url_for, flash
+from flask import request, jsonify, render_template, Blueprint, send_from_directory
 import os
 import json
 import shutil
 import traceback
-import sys
 
 add_label_blueprint = Blueprint('add_label', __name__)
 

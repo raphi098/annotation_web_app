@@ -27,20 +27,20 @@
     </div>
 
         <div class="button-section">
-            <label for="file-upload" class="file-upload">Datei auswählen</label>
+            <label for="file-upload" class="file-upload">Select file</label>
             <input id="file-upload" type="file" accept="video/*" style="display: none;" onchange="handleFileUpload(event)" />
         </div>
         <p id="upload-message" style="display: none;"></p>
         <button id="predict-button" onclick="predict()" style="display: none;">Start the prediction</button>
         <div class="checkbox-container" style="display: none;">
-            <label><input class="krank-box" type="checkbox" name="krank">krank</label>
+            <label><input class="krank-box" type="checkbox" name="krank">ill</label>
             <label><input type="radio" name="group" value="medoa">medoa</label>
             <label><input type="radio" name="group" value="medua">medua</label>
             <label><input type="radio" name="group" value="ulnoa">ulnoa</label>
             <label><input type="radio" name="group" value="ulnua">ulnua</label>
         </div>
         <div id="image-grid" style="display: flex; flex-wrap: wrap;"></div>
-        <button id="save-button" class="save-button" style="display: none;">Daten speichern</button>
+        <button id="save-button" class="save-button" style="display: none;">Save</button>
     </main>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>

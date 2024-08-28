@@ -1,10 +1,8 @@
-from flask import Flask, request, jsonify, render_template, Blueprint, send_from_directory
+from flask import request, jsonify, render_template, Blueprint, send_from_directory
 import os
 import json
 import shutil
 from PIL import Image, ImageDraw
-import time
-import psutil
 add_bbox_blueprint= Blueprint('BboxClassification', __name__)
 
 def create_img_with_bbox(label_data_list):

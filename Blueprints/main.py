@@ -7,7 +7,7 @@ home_Classification_blueprint = Blueprint('home_Classification', __name__)
 
 @home_Classification_blueprint.route('/classification_home')
 def handclassification_home():
-    #Move the images that have no detection to the error_label folder
+    # Move the images that have no detection to the error_label folder
     display_image_folder = os.path.join(os.getcwd(),'HandClassification', 'change_label', "display")
     raw_image_folder = os.path.join(os.getcwd(), 'HandClassification', 'change_label', 'raw')
     error_bbox_folder = os.path.join(os.getcwd(), 'HandClassification', 'Adapt_bbox')
